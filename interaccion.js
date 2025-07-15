@@ -1,4 +1,3 @@
-// Los datos (nodes y links) vienen de malla.js
 const svg = d3.select("svg");
 const width = window.innerWidth;
 const height = window.innerHeight;
@@ -63,5 +62,3 @@ simulation.on("tick", () => {
 
   nodeGroup.attr("transform", d => `translate(${d.x},${d.y})`);
 });
-
-  
