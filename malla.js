@@ -1,83 +1,64 @@
 const nodes = [
-  { id: "Álgebra I", tipo: "general", semestre: 1, completado: false },
-  { id: "Cálculo I", tipo: "general", semestre: 1, completado: false },
-  { id: "Álgebra Lineal", tipo: "general", semestre: 2, completado: false },
-  { id: "Cálculo II", tipo: "general", semestre: 2, completado: false },
-  { id: "Estadística", tipo: "general", semestre: 3, completado: false },
-  { id: "Investigación de Operaciones", tipo: "especialidad", semestre: 5, completado: false },
-  { id: "Gestión Estratégica", tipo: "profesional", semestre: 9, completado: false }
+  { id: "Comprensión del Inglés", tipo: "general", semestre: 1 },
+  { id: "Geometría", tipo: "general", semestre: 1 },
+  { id: "Álgebra I", tipo: "general", semestre: 1 },
+  { id: "Comunicación en Español", tipo: "general", semestre: 1 },
+  { id: "Química General", tipo: "general", semestre: 1 },
+  { id: "Educación Física", tipo: "general", semestre: 1 },
+  { id: "Intro. a la Ing. Industrial", tipo: "profesional", semestre: 1 },
+
+  { id: "Comunicación en Inglés", tipo: "general", semestre: 2 },
+  { id: "Álgebra Lineal", tipo: "general", semestre: 2 },
+  { id: "Cálculo con IRR", tipo: "general", semestre: 2 },
+  { id: "Taller de Programación", tipo: "general", semestre: 2 },
+  { id: "Química de Procesos", tipo: "general", semestre: 2 },
+  { id: "Taller de TIC", tipo: "general", semestre: 2 },
+
+  { id: "Cálculo en Varias Variables", tipo: "general", semestre: 3 },
+  { id: "Física Mecánica I", tipo: "general", semestre: 3 },
+  { id: "Estadística y Probabilidades", tipo: "general", semestre: 3 },
+  { id: "Creatividad e Innovación", tipo: "especialidad", semestre: 3 },
+
+  { id: "Ecuaciones Diferenciales", tipo: "general", semestre: 4 },
+  { id: "Física Mecánica II", tipo: "general", semestre: 4 },
+  { id: "Inferencia Estadística", tipo: "general", semestre: 4 },
+  { id: "Teoría Organizacional", tipo: "especialidad", semestre: 4 },
+  { id: "Taller de Emprendimiento", tipo: "profesional", semestre: 4 },
+
+  { id: "Electroelectrónica", tipo: "general", semestre: 5 },
+  { id: "Termodinámica", tipo: "general", semestre: 5 },
+  { id: "Métodos Numéricos", tipo: "general", semestre: 5 },
+  { id: "Investigación de Operaciones I", tipo: "especialidad", semestre: 5 },
+  { id: "Teoría de Sistemas", tipo: "especialidad", semestre: 5 },
+  { id: "Microeconomía", tipo: "especialidad", semestre: 5 },
+
+  { id: "Mecánica de Fluidos", tipo: "general", semestre: 6 },
+  { id: "Contabilidad y Costos", tipo: "especialidad", semestre: 6 },
+  { id: "Macroeconomía", tipo: "especialidad", semestre: 6 },
+  { id: "Investigación de Operaciones II", tipo: "especialidad", semestre: 6 },
+
+  { id: "Sistemas de Información", tipo: "especialidad", semestre: 7 },
+  { id: "Simulación de Procesos", tipo: "especialidad", semestre: 7 },
+  { id: "Estudio del Trabajo", tipo: "especialidad", semestre: 7 },
+  { id: "Gestión Táctica de Operaciones", tipo: "especialidad", semestre: 7 },
+
+  { id: "Gestión Estratégica", tipo: "profesional", semestre: 9 },
+  { id: "Finanzas", tipo: "profesional", semestre: 9 },
+  { id: "Gestión de Proyectos", tipo: "profesional", semestre: 10 },
+  { id: "Seminario de Titulación", tipo: "profesional", semestre: 11 }
 ];
 
 const links = [
   { source: "Álgebra I", target: "Álgebra Lineal" },
-  { source: "Cálculo I", target: "Cálculo II" },
-  { source: "Cálculo II", target: "Estadística" },
-  { source: "Estadística", target: "Investigación de Operaciones" },
-  { source: "Investigación de Operaciones", target: "Gestión Estratégica" }
+  { source: "Álgebra Lineal", target: "Estadística y Probabilidades" },
+  { source: "Cálculo con IRR", target: "Cálculo en Varias Variables" },
+  { source: "Cálculo en Varias Variables", target: "Ecuaciones Diferenciales" },
+  { source: "Física Mecánica I", target: "Física Mecánica II" },
+  { source: "Estadística y Probabilidades", target: "Inferencia Estadística" },
+  { source: "Inferencia Estadística", target: "Investigación de Operaciones I" },
+  { source: "Investigación de Operaciones I", target: "Investigación de Operaciones II" },
+  { source: "Investigación de Operaciones II", target: "Gestión Táctica de Operaciones" },
+  { source: "Gestión Táctica de Operaciones", target: "Gestión Estratégica" },
+  { source: "Gestión Estratégica", target: "Gestión de Proyectos" },
+  { source: "Gestión de Proyectos", target: "Seminario de Titulación" }
 ];
-
-const svg = d3.select("svg");
-const width = window.innerWidth;
-const height = window.innerHeight;
-
-const simulation = d3.forceSimulation(nodes)
-  .force("link", d3.forceLink(links).id(d => d.id).distance(150))
-  .force("charge", d3.forceManyBody().strength(-400))
-  .force("center", d3.forceCenter(width / 2, height / 2));
-
-const link = svg.append("g")
-  .selectAll("line")
-  .data(links)
-  .join("line")
-  .attr("class", "link");
-
-const nodeGroup = svg.append("g")
-  .selectAll("g")
-  .data(nodes)
-  .join("g")
-  .attr("class", "node")
-  .on("click", (event, d) => {
-    d.completado = !d.completado;
-    updateColors();
-  });
-
-nodeGroup.append("circle")
-  .attr("r", 20);
-
-nodeGroup.append("text")
-  .text(d => d.id)
-  .attr("dy", 4)
-  .attr("text-anchor", "middle");
-
-function updateColors() {
-  // Recalcular disponibilidad
-  const completed = new Set(nodes.filter(n => n.completado).map(n => n.id));
-  const dependencies = Object.fromEntries(nodes.map(n => [n.id, []]));
-
-  links.forEach(l => {
-    dependencies[l.target].push(l.source);
-  });
-
-  nodeGroup.select("circle")
-    .attr("fill", d => {
-      if (d.completado) return "#aaa"; // gris si ya está completado
-      const prereqs = dependencies[d.id] || [];
-      const ready = prereqs.every(p => completed.has(p));
-      return ready ? "#D81B60" : "#F8BBD0"; // rosado fuerte o rosado claro
-    });
-
-  nodeGroup.select("text")
-    .style("text-decoration", d => d.completado ? "line-through" : "none");
-}
-
-updateColors();
-
-simulation.on("tick", () => {
-  link
-    .attr("x1", d => d.source.x)
-    .attr("y1", d => d.source.y)
-    .attr("x2", d => d.target.x)
-    .attr("y2", d => d.target.y);
-
-  nodeGroup.attr("transform", d => `translate(${d.x},${d.y})`);
-});
